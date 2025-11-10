@@ -41,9 +41,9 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 
 ### Part 3: Inventory & UI
 
-- [ ] Create a variable to track the player's inventory (e.g., `inventoryToken: { value: number } | null`).
-- [ ] Add a simple HTML element (e.g., a `<div>`) to the page to display the inventory status (e.g., "Holding: Empty" or "Holding: Token (Value 4)").
-- [ ] Write a function `updateInventoryUI()` that updates this HTML element based on the `inventoryToken` variable.
+- [x] Create a variable to track the player's inventory (e.g., `inventoryToken: { value: number } | null`).
+- [x] Add a simple HTML element (e.g., a `<div>`) to the page to display the inventory status (e.g., "Holding: Empty" or "Holding: Token (Value 4)").
+- [x] Write a function `updateInventoryUI()` that updates this HTML element based on the `inventoryToken` variable.
 
 ### Part 4: Game Logic & Interaction
 

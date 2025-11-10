@@ -11,10 +11,15 @@ import "./_leafletWorkaround.ts";
 // Imported our luck function
 import luck from "./_luck.ts";
 
-// Created the map div
+// Created UI Elements
 const mapDiv = document.createElement("div");
 mapDiv.id = "map";
 document.body.append(mapDiv);
+
+// New status panel for inventory
+const statusPanelDiv = document.createElement("div");
+statusPanelDiv.id = "statusPanel";
+document.body.append(statusPanelDiv);
 
 // Game Constants
 const CLASSROOM_LATLNG = leaflet.latLng(
@@ -93,3 +98,23 @@ for (let i = -GRID_SIZE; i < GRID_SIZE; i++) {
     rect.addTo(map);
   }
 }
+
+// Inventory
+type Token = {
+  value: number;
+};
+
+const inventoryToken: Token | null = null;
+
+// UI
+function updateInventoryUI() {
+  if (inventoryToken) {
+    statusPanelDiv.innerHTML =
+      `Holding: Token (Value: ${inventoryToken.value})`;
+  } else {
+    statusPanelDiv.innerHTML = "Holding: Empty";
+  }
+}
+
+// Initializes UI
+updateInventoryUI();
