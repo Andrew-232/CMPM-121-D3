@@ -23,10 +23,10 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 
 - [x] copy main.ts to reference.ts for future reference
 - [x] delete everything in main.ts
-- [ ] put a basic leaflet map on the screen
-- [ ] Center the map on a fixed location (e.g., the classroom) and set a fixed zoom level.
-- [ ] Disable map movement and zooming.
-- [ ] Draw the player's location on the map (e.g., a circle or marker).
+- [x] put a basic leaflet map on the screen
+- [x] Center the map on a fixed location (e.g., the classroom) and set a fixed zoom level.
+- [x] Disable map movement and zooming.
+- [x] Draw the player's location on the map (e.g., a circle or marker).
 
 ### Part 2: Cell & Grid System
 
