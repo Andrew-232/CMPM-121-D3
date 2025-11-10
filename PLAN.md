@@ -30,14 +30,14 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 
 ### Part 2: Cell & Grid System
 
-- [ ] Define the grid system constants (e.g., cell size like `0.0001`, player interaction-radius).
+- [x] Define the grid system constants (e.g., cell size like `0.0001`, player interaction-radius).
 - [ ] Create a data structure or class for a `Cell`, which can be identified by its coordinates (e.Sg., `i`, `j`).
-- [ ] Create a "deterministic " function (using the provided `luck` function) that takes cell coordinates (`i`, `j`) and decides if a token exists there (and its initial value, e.g., `1`). This ensures the map is consistent on every page load.
-- [ ] Write a function to draw a single cell (a Leaflet rectangle) on the map given its coordinates.
-- [ ] Use nested loops to draw a large grid of cells that covers the entire visible map area.
-- [ ] Modify the grid-drawing loop:
-  - [ ] Use the deterministic `luck` function to get the data for each cell.
-  - [ ] If a token exists in a cell, render its value (e.g., as text, a `L.divIcon`, or by coloring the cell).
+- [x] Create a "deterministic " function (using the provided `luck` function) that takes cell coordinates (`i`, `j`) and decides if a token exists there (and its initial value, e.g., `1`). This ensures the map is consistent on every page load.
+- [x] Write a function to draw a single cell (a Leaflet rectangle) on the map given its coordinates.
+- [x] Use nested loops to draw a large grid of cells that covers the entire visible map area.
+- [x] Modify the grid-drawing loop:
+  - [x] Use the deterministic `luck` function to get the data for each cell.
+  - [x] If a token exists in a cell, render its value (e.g., as text, a `L.divIcon`, or by coloring the cell).
 
 ### Part 3: Inventory & UI
 
