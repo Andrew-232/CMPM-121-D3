@@ -31,7 +31,7 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 ### Part 2: Cell & Grid System
 
 - [x] Define the grid system constants (e.g., cell size like `0.0001`, player interaction-radius).
-- [ ] Create a data structure or class for a `Cell`, which can be identified by its coordinates (e.Sg., `i`, `j`).
+- [x] Create a data structure or class for a `Cell`, which can be identified by its coordinates (e.Sg., `i`, `j`).
 - [x] Create a "deterministic " function (using the provided `luck` function) that takes cell coordinates (`i`, `j`) and decides if a token exists there (and its initial value, e.g., `1`). This ensures the map is consistent on every page load.
 - [x] Write a function to draw a single cell (a Leaflet rectangle) on the map given its coordinates.
 - [x] Use nested loops to draw a large grid of cells that covers the entire visible map area.
@@ -47,25 +47,19 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 
 ### Part 4: Game Logic & Interaction
 
-- [ ] Add a click listener to each cell rectangle.
-- [ ] Inside the click handler, first check if the cell is within the player's interaction radius. If not, do nothing.
-- [ ] **If the player's inventory is empty:**
-  - [ ] On click, check if the cell contains a token.
-    - [ ] If it does, move the token to the `inventoryToken` variable.
-    - [ ] "Remove" the token from the cell (e.g., update the cell's data and visual).
-    - [ ] Call `updateInventoryUI()`.
-- [ ] **If the player's inventory is full:**
-  - [ ] **Crafting Logic:** On click, check if the cell contains a token _of the same value_ as the inventory token.
-        - [ ] If values match: "Remove" the token from the cell, double the value of the `inventoryToken`, and call `updateInventoryUI()`.
-        - [ ] If values _do not_ match, do nothing.
-    - [ ] **Placing Logic:** On click, check if the cell is _empty_.
-      - [ ] If it's empty, move the token from `inventoryToken` to the cell (update cell data and visual).
-      - [ ] Set `inventoryToken` to `null` and call `updateInventoryUI()`.
-
-### Part 5: Win Condition
-
-- [ ] Define a "win value" (e.g., `8` or `16`).
-- [ ] After each successful craft, check if the `inventoryToken`'s value meets or exceeds the win value.
-- [ ] If it does, show a "You Win!" message (e.g., using `alert()`).
+- [x] Add a click listener to each cell rectangle.
+- [x] Inside the click handler, first check if the cell is within the player's interaction radius. If not, do nothing.
+- [x] **If the player's inventory is empty:**
+  - [x] On click, check if the cell contains a token.
+    - [x] If it does, move the token to the `inventoryToken` variable.
+    - [x] "Remove" the token from the cell (e.g., update the cell's data and visual).
+    - [x] Call `updateInventoryUI()`.
+- [x] **If the player's inventory is full:**
+  - [x] **Crafting Logic:** On click, check if the cell contains a token _of the same value_ as the inventory token.
+        - [x] If values match: "Remove" the token from the cell, double the value of the `inventoryToken`, and call `updateInventoryUI()`.
+        - [x] If values _do not_ match, do nothing.
+    - [x] **Placing Logic:** On click, check if the cell is _empty_.
+      - [x] If it's empty, move the token from `inventoryToken` to the cell (update cell data and visual).
+      - [x] Set `inventoryToken` to `null` and call `updateInventoryUI()`.
 
 ## D3.b: Coming soon
