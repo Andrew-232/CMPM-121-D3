@@ -40,7 +40,6 @@ const CLASSROOM_LATLNG = leaflet.latLng(
 );
 const GAMEPLAY_ZOOM_LEVEL = 19;
 const TILE_DEGREES = 1e-4;
-const GRID_SIZE = 20;
 const TOKEN_SPAWN_PROBABILITY = 0.1;
 const PLAYER_INTERACTION_RADIUS = 3;
 
@@ -85,13 +84,14 @@ const playerMarker = leaflet.marker(playerLatLng);
 playerMarker.bindTooltip("That's you!");
 playerMarker.addTo(map);
 
-function _latLngToCell(latLng: leaflet.LatLng): CellID {
+// Coordinate Functions
+function latLngToCell(latLng: leaflet.LatLng): CellID {
   const i = Math.floor(latLng.lat / TILE_DEGREES);
   const j = Math.floor(latLng.lng / TILE_DEGREES);
   return { i, j };
 }
 
-function _cellToBounds(id: CellID): leaflet.LatLngBounds {
+function cellToBounds(id: CellID): leaflet.LatLngBounds {
   const { i, j } = id;
   const north = (i + 1) * TILE_DEGREES;
   const south = i * TILE_DEGREES;
@@ -123,68 +123,79 @@ function updateCellVisuals(cell: CellData) {
   rectangle.setStyle(cellOptions);
 }
 
-for (let i = -GRID_SIZE; i < GRID_SIZE; i++) {
-  for (let j = -GRID_SIZE; j < GRID_SIZE; j++) {
-    const tempOrigin = CLASSROOM_LATLNG;
-    const bounds = leaflet.latLngBounds([
-      [tempOrigin.lat + i * TILE_DEGREES, tempOrigin.lng + j * TILE_DEGREES],
-      [
-        tempOrigin.lat + (i + 1) * TILE_DEGREES,
-        tempOrigin.lng + (j + 1) * TILE_DEGREES,
-      ],
-    ]);
+// Dynamic Grid Drawing
+function drawVisibleCells() {
+  for (const cell of cellMap.values()) {
+    cell.rectangle.remove();
+  }
+  cellMap.clear();
 
-    const rectangle = leaflet.rectangle(bounds, {
-      color: "grey",
-      fillOpacity: 0.1,
-      weight: 0.5,
-    });
+  const bounds = map.getBounds();
+  const northEast = bounds.getNorthEast();
+  const southWest = bounds.getSouthWest();
 
-    const hasToken = luck([i, j].toString()) < TOKEN_SPAWN_PROBABILITY;
+  const minCell = latLngToCell(southWest);
+  const maxCell = latLngToCell(northEast);
 
-    const cellData: CellData = {
-      id: { i, j },
-      token: hasToken ? { value: 1 } : null,
-      rectangle: rectangle,
-    };
+  for (let i = minCell.i; i <= maxCell.i; i++) {
+    for (let j = minCell.j; j <= maxCell.j; j++) {
+      const id: CellID = { i, j };
+      const key = `${i},${j}`;
+      const bounds = cellToBounds(id);
 
-    const key = `${i},${j}`;
-    cellMap.set(key, cellData);
-    updateCellVisuals(cellData);
-    rectangle.addTo(map);
+      const rectangle = leaflet.rectangle(bounds, {
+        color: "grey",
+        fillOpacity: 0.1,
+        weight: 0.5,
+      });
 
-    rectangle.on("click", () => {
-      const distance = Math.max(Math.abs(i), Math.abs(j));
-      if (distance > PLAYER_INTERACTION_RADIUS) {
-        console.log("Cell is too far away!");
-        return;
-      }
+      const hasToken = luck([i, j].toString()) < TOKEN_SPAWN_PROBABILITY;
 
-      // GAME LOGIC
-      if (inventoryToken === null) {
-        if (cellData.token) {
-          inventoryToken = cellData.token;
-          cellData.token = null;
+      const cellData: CellData = {
+        id: id,
+        token: hasToken ? { value: 1 } : null,
+        rectangle: rectangle,
+      };
+
+      cellMap.set(key, cellData);
+      updateCellVisuals(cellData);
+      rectangle.addTo(map);
+
+      rectangle.on("click", () => {
+        const distance = Math.max(Math.abs(i), Math.abs(j));
+        if (distance > PLAYER_INTERACTION_RADIUS) {
+          console.log("Cell is too far away! (interaction logic is broken)");
+          return;
         }
-      } else {
-        // Craft or Place
-        if (cellData.token) {
-          if (cellData.token.value === inventoryToken.value) {
-            inventoryToken.value *= 2;
+
+        // GAME LOGIC
+        if (inventoryToken === null) {
+          if (cellData.token) {
+            inventoryToken = cellData.token;
             cellData.token = null;
           }
         } else {
-          cellData.token = inventoryToken;
-          inventoryToken = null;
+          // Craft or Place
+          if (cellData.token) {
+            if (cellData.token.value === inventoryToken.value) {
+              inventoryToken.value *= 2;
+              cellData.token = null;
+            }
+          } else {
+            cellData.token = inventoryToken;
+            inventoryToken = null;
+          }
         }
-      }
 
-      // Updates both the cell and inventory after any action
-      updateCellVisuals(cellData);
-      updateInventoryUI();
-    });
+        // Updates both the cell and inventory after any action
+        updateCellVisuals(cellData);
+        updateInventoryUI();
+      });
+    }
   }
 }
+
+map.on("moveend", drawVisibleCells);
 
 // UI
 function updateInventoryUI() {
@@ -198,3 +209,4 @@ function updateInventoryUI() {
 
 // Initializes UI
 updateInventoryUI();
+drawVisibleCells();

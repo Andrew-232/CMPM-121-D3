@@ -80,15 +80,15 @@ Key gameplay challenge: Can the player "farm" tokens by moving around, taking ad
 
 ### Part 2: Dynamic Grid Drawing
 
-- [ ] Create a new main function `drawVisibleCells()`.
-- [ ] This function will:
-  - [ ] Get the map's current view bounds (`map.getBounds()`).
-  - [ ] Use `latLngToCell` to calculate the *range_ of `(i, j)` cells to draw.
-  - [ ] **Crucially:** Clear all old rectangles from the map and clear the `cellMap`. This makes the cells "memoryless."
-  - [ ] Loop over the visible `(i, j)` range and (re)draw all cells, reusing the `luck` function and `updateCellVisuals`.
-- [ ] Delete the old, static `for` loop that drew the grid.
-- [ ] Call `drawVisibleCells()` once at startup.
-- [ ] Add a Leaflet event listener (`map.on('moveend', ...)` ) that calls `drawVisibleCells()` every time the map stops moving.
+- [x] Create a new main function `drawVisibleCells()`.
+- [x] This function will:
+  - [x] Get the map's current view bounds (`map.getBounds()`).
+  - [x] Use `latLngToCell` to calculate the *range_ of `(i, j)` cells to draw.
+  - [x] **Crucially:** Clear all old rectangles from the map and clear the `cellMap`. This makes the cells "memoryless."
+  - [x] Loop over the visible `(i, j)` range and (re)draw all cells, reusing the `luck` function and `updateCellVisuals`.
+- [x] Delete the old, static `for` loop that drew the grid.
+- [x] Call `drawVisibleCells()` once at startup.
+- [x] Add a Leaflet event listener (`map.on('moveend', ...)` ) that calls `drawVisibleCells()` every time the map stops moving.
 
 ### Part 3: Implement Player Movement & Win Condition
 
