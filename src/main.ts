@@ -12,6 +12,10 @@ import "./_leafletWorkaround.ts";
 import luck from "./_luck.ts";
 
 // Created UI Elements
+const controlPanelDiv = document.createElement("div");
+controlPanelDiv.id = "controlPanel";
+document.body.append(controlPanelDiv);
+
 const mapDiv = document.createElement("div");
 mapDiv.id = "map";
 document.body.append(mapDiv);
@@ -20,6 +24,14 @@ document.body.append(mapDiv);
 const statusPanelDiv = document.createElement("div");
 statusPanelDiv.id = "statusPanel";
 document.body.append(statusPanelDiv);
+
+// Added movement buttons
+controlPanelDiv.innerHTML = `
+  <button id="north">N</button>
+  <button id="south">S</button>
+  <button id="west">W</button>
+  <button id="east">E</button>
+`;
 
 // Game Constants
 const CLASSROOM_LATLNG = leaflet.latLng(
@@ -37,9 +49,13 @@ type Token = {
   value: number;
 };
 
-type CellData = {
+type CellID = {
   i: number;
   j: number;
+};
+
+type CellData = {
+  id: CellID;
   token: Token | null;
   rectangle: leaflet.Rectangle;
 };
@@ -47,18 +63,12 @@ type CellData = {
 // Game State
 let inventoryToken: Token | null = null;
 const cellMap: Map<string, CellData> = new Map();
+const playerLatLng = CLASSROOM_LATLNG.clone();
 
 // Map Initialization
 const map = leaflet.map(mapDiv, {
-  center: CLASSROOM_LATLNG,
+  center: playerLatLng,
   zoom: GAMEPLAY_ZOOM_LEVEL,
-  minZoom: GAMEPLAY_ZOOM_LEVEL,
-  maxZoom: GAMEPLAY_ZOOM_LEVEL,
-  zoomControl: false,
-  scrollWheelZoom: false,
-  dragging: false,
-  touchZoom: false,
-  doubleClickZoom: false,
 });
 
 // Populates the map with a background tile layer
@@ -71,20 +81,29 @@ leaflet
   .addTo(map);
 
 // Player Marker
-const playerMarker = leaflet.marker(CLASSROOM_LATLNG);
+const playerMarker = leaflet.marker(playerLatLng);
 playerMarker.bindTooltip("That's you!");
 playerMarker.addTo(map);
 
-// Function to get the bounds of a cell
-function getCellBounds(i: number, j: number): leaflet.LatLngBounds {
-  const origin = CLASSROOM_LATLNG;
-  const bounds = leaflet.latLngBounds([
-    [origin.lat + i * TILE_DEGREES, origin.lng + j * TILE_DEGREES],
-    [origin.lat + (i + 1) * TILE_DEGREES, origin.lng + (j + 1) * TILE_DEGREES],
-  ]);
-  return bounds;
+function _latLngToCell(latLng: leaflet.LatLng): CellID {
+  const i = Math.floor(latLng.lat / TILE_DEGREES);
+  const j = Math.floor(latLng.lng / TILE_DEGREES);
+  return { i, j };
 }
 
+function _cellToBounds(id: CellID): leaflet.LatLngBounds {
+  const { i, j } = id;
+  const north = (i + 1) * TILE_DEGREES;
+  const south = i * TILE_DEGREES;
+  const east = (j + 1) * TILE_DEGREES;
+  const west = j * TILE_DEGREES;
+  return leaflet.latLngBounds([
+    [south, west],
+    [north, east],
+  ]);
+}
+
+// Cell Visuals
 function updateCellVisuals(cell: CellData) {
   const { token, rectangle } = cell;
 
@@ -104,10 +123,17 @@ function updateCellVisuals(cell: CellData) {
   rectangle.setStyle(cellOptions);
 }
 
-// Loop to create cell data and draw the grid
 for (let i = -GRID_SIZE; i < GRID_SIZE; i++) {
   for (let j = -GRID_SIZE; j < GRID_SIZE; j++) {
-    const bounds = getCellBounds(i, j);
+    const tempOrigin = CLASSROOM_LATLNG;
+    const bounds = leaflet.latLngBounds([
+      [tempOrigin.lat + i * TILE_DEGREES, tempOrigin.lng + j * TILE_DEGREES],
+      [
+        tempOrigin.lat + (i + 1) * TILE_DEGREES,
+        tempOrigin.lng + (j + 1) * TILE_DEGREES,
+      ],
+    ]);
+
     const rectangle = leaflet.rectangle(bounds, {
       color: "grey",
       fillOpacity: 0.1,
@@ -117,8 +143,7 @@ for (let i = -GRID_SIZE; i < GRID_SIZE; i++) {
     const hasToken = luck([i, j].toString()) < TOKEN_SPAWN_PROBABILITY;
 
     const cellData: CellData = {
-      i: i,
-      j: j,
+      id: { i, j },
       token: hasToken ? { value: 1 } : null,
       rectangle: rectangle,
     };

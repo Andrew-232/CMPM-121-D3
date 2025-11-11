@@ -17,7 +17,7 @@
 Key technical challenge: Can you assemble a map-based user interface using the Leaflet mapping framework?
 Key gameplay challenge: Can players collect and craft tokens from nearby locations to finally make one of sufficiently high value?
 
-## Steps
+## D3.a Steps
 
 ### Part 1: Basic Map Setup
 
@@ -62,4 +62,46 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
       - [x] If it's empty, move the token from `inventoryToken` to the cell (update cell data and visual).
       - [x] Set `inventoryToken` to `null` and call `updateInventoryUI()`.
 
-## D3.b: Coming soon
+## D3.b: Globe-spanning Gameplay
+
+Key technical challenge: Can you refactor the grid system to be earth-spanning and dynamically drawn as the map moves?
+Key gameplay challenge: Can the player "farm" tokens by moving around, taking advantage of the "memoryless" cells?
+
+## D3.b Steps
+
+### Part 1: Refactor to an Absolute, Earth-Spanning Grid
+
+- [x] Unlock the map by removing `dragging`, `zoom`, etc., options from the `map` initialization.
+- [x] Create a `controlPanel` div and add four buttons (North, South, East, West) for player movement.
+- [x] Refactor the player's position from a `const` to a `let` variable (e.g., `let playerLatLng`) so it can be updated.
+- [x] Create a function `latLngToCell(latLng)` that converts any Lat/Lng to an absolute `(i, j)` grid coordinate (anchored at 0,0).
+- [x] Create a function `cellToBounds(i, j)` that converts an absolute `(i, j)` coordinate back into `LatLngBounds`.
+- [x] Delete the old `getCellBounds` function.
+
+### Part 2: Dynamic Grid Drawing
+
+- [ ] Create a new main function `drawVisibleCells()`.
+- [ ] This function will:
+  - [ ] Get the map's current view bounds (`map.getBounds()`).
+  - [ ] Use `latLngToCell` to calculate the *range_ of `(i, j)` cells to draw.
+  - [ ] **Crucially:** Clear all old rectangles from the map and clear the `cellMap`. This makes the cells "memoryless."
+  - [ ] Loop over the visible `(i, j)` range and (re)draw all cells, reusing the `luck` function and `updateCellVisuals`.
+- [ ] Delete the old, static `for` loop that drew the grid.
+- [ ] Call `drawVisibleCells()` once at startup.
+- [ ] Add a Leaflet event listener (`map.on('moveend', ...)` ) that calls `drawVisibleCells()` every time the map stops moving.
+
+### Part 3: Implement Player Movement & Win Condition
+
+- [ ] Define a new, higher `WIN_VALUE` (e.g., 32 or 64) in `Game Constants`.
+- [ ] Add click handlers to the N/S/E/W buttons.
+- [ ] When a button is clicked (e.g., "North"):
+  - [ ] Update the `playerLatLng` variable (e.g., `playerLatLng.lat += TILE_DEGREES`).
+  - [ ] Move the `playerMarker` to the new location (`playerMarker.setLatLng(...)`).
+  - [ ] Center the map on the player's new location (`map.panTo(...)`).
+- [ ] **Refactor Click Logic:** The click logic for interaction is now broken.
+  - [ ] Inside the cell's `on("click")` handler, get the player's current cell `(player_i, player_j)` using `latLngToCell(playerLatLng)`.
+  - [ ] Calculate distance relative to the player: `Math.max(Math.abs(i - player_i), Math.abs(j - player_j))`.
+  - [ ] Use *this_ new distance to check against `PLAYER_INTERACTION_RADIUS`.
+  - [ ] Add the win condition check (`if (inventoryToken.value >= WIN_VALUE)`) after a successful craft.
+
+### D3.c Coming Soon
