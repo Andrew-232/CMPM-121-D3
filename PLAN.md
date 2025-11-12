@@ -92,16 +92,16 @@ Key gameplay challenge: Can the player "farm" tokens by moving around, taking ad
 
 ### Part 3: Implement Player Movement & Win Condition
 
-- [ ] Define a new, higher `WIN_VALUE` (e.g., 32 or 64) in `Game Constants`.
-- [ ] Add click handlers to the N/S/E/W buttons.
-- [ ] When a button is clicked (e.g., "North"):
-  - [ ] Update the `playerLatLng` variable (e.g., `playerLatLng.lat += TILE_DEGREES`).
-  - [ ] Move the `playerMarker` to the new location (`playerMarker.setLatLng(...)`).
-  - [ ] Center the map on the player's new location (`map.panTo(...)`).
-- [ ] **Refactor Click Logic:** The click logic for interaction is now broken.
-  - [ ] Inside the cell's `on("click")` handler, get the player's current cell `(player_i, player_j)` using `latLngToCell(playerLatLng)`.
-  - [ ] Calculate distance relative to the player: `Math.max(Math.abs(i - player_i), Math.abs(j - player_j))`.
-  - [ ] Use *this_ new distance to check against `PLAYER_INTERACTION_RADIUS`.
-  - [ ] Add the win condition check (`if (inventoryToken.value >= WIN_VALUE)`) after a successful craft.
+- [x] Define a new, higher `WIN_VALUE` (e.g., 32 or 64) in `Game Constants`.
+- [x] Add click handlers to the N/S/E/W buttons.
+- [x] When a button is clicked (e.g., "North"):
+  - [x] Update the `playerLatLng` variable (e.g., `playerLatLng.lat += TILE_DEGREES`).
+  - [x] Move the `playerMarker` to the new location (`playerMarker.setLatLng(...)`).
+  - [x] Center the map on the player's new location (`map.panTo(...)`).
+- [x] **Refactor Click Logic:** The click logic for interaction is now broken.
+  - [x] Inside the cell's `on("click")` handler, get the player's current cell `(player_i, player_j)` using `latLngToCell(playerLatLng)`.
+  - [x] Calculate distance relative to the player: `Math.max(Math.abs(i - player_i), Math.abs(j - player_j))`.
+  - [x] Use *this_ new distance to check against `PLAYER_INTERACTION_RADIUS`.
+  - [x] Add the win condition check (`if (inventoryToken.value >= WIN_VALUE)`) after a successful craft.
 
 ### D3.c Coming Soon

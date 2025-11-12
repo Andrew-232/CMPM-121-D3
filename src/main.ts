@@ -42,6 +42,7 @@ const GAMEPLAY_ZOOM_LEVEL = 19;
 const TILE_DEGREES = 1e-4;
 const TOKEN_SPAWN_PROBABILITY = 0.1;
 const PLAYER_INTERACTION_RADIUS = 3;
+const WIN_VALUE = 32;
 
 // Type Definitions
 type Token = {
@@ -162,9 +163,14 @@ function drawVisibleCells() {
       rectangle.addTo(map);
 
       rectangle.on("click", () => {
-        const distance = Math.max(Math.abs(i), Math.abs(j));
+        const playerCell = latLngToCell(playerLatLng);
+        const distance = Math.max(
+          Math.abs(i - playerCell.i),
+          Math.abs(j - playerCell.j),
+        );
+
         if (distance > PLAYER_INTERACTION_RADIUS) {
-          console.log("Cell is too far away! (interaction logic is broken)");
+          console.log("Cell is too far away!");
           return;
         }
 
@@ -180,6 +186,13 @@ function drawVisibleCells() {
             if (cellData.token.value === inventoryToken.value) {
               inventoryToken.value *= 2;
               cellData.token = null;
+
+              if (inventoryToken.value >= WIN_VALUE) {
+                alert(
+                  "You Win! You crafted a token of value " +
+                    inventoryToken.value,
+                );
+              }
             }
           } else {
             cellData.token = inventoryToken;
@@ -197,6 +210,35 @@ function drawVisibleCells() {
 
 map.on("moveend", drawVisibleCells);
 
+// Player Movement
+function movePlayer(latDelta: number, lngDelta: number) {
+  playerLatLng.lat += latDelta;
+  playerLatLng.lng += lngDelta;
+
+  playerMarker.setLatLng(playerLatLng);
+
+  map.panTo(playerLatLng);
+}
+
+// Gets buttons
+const northButton = document.getElementById("north")!;
+const southButton = document.getElementById("south")!;
+const westButton = document.getElementById("west")!;
+const eastButton = document.getElementById("east")!;
+
+northButton.addEventListener("click", () => {
+  movePlayer(TILE_DEGREES, 0);
+});
+southButton.addEventListener("click", () => {
+  movePlayer(-TILE_DEGREES, 0);
+});
+westButton.addEventListener("click", () => {
+  movePlayer(0, -TILE_DEGREES);
+});
+eastButton.addEventListener("click", () => {
+  movePlayer(0, TILE_DEGREES);
+});
+
 // UI
 function updateInventoryUI() {
   if (inventoryToken) {
@@ -207,6 +249,6 @@ function updateInventoryUI() {
   }
 }
 
-// Initializes UI
+// Initial Load
 updateInventoryUI();
 drawVisibleCells();
