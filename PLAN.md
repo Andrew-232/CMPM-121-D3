@@ -104,4 +104,21 @@ Key gameplay challenge: Can the player "farm" tokens by moving around, taking ad
   - [x] Use *this_ new distance to check against `PLAYER_INTERACTION_RADIUS`.
   - [x] Add the win condition check (`if (inventoryToken.value >= WIN_VALUE)`) after a successful craft.
 
-### D3.c Coming Soon
+## D3.c: Object persistence
+
+Key technical challenge: Can we implement a memory-efficient storage system (Flyweight) that persists cell state (Memento)?
+Key gameplay challenge: Do cells now remember their state, removing the "farming" mechanic?
+
+### Steps
+
+- [x] Create a new, persistent `Map` (e.g., `persistentCellData: Map<string, Token | null>`). This map will **not** be cleared on `moveend` and will act as our Memento.
+- [x] **Refactor `drawVisibleCells()`:**
+  - [x] When looping through visible cells, first check if the cell's `key` (e.g., `"i,j"`) exists in `persistentCellData`.
+  - [x] **If YES (Memento):** Load the token state (it could be a `Token` or `null`) from this map.
+  - [x] **If NO (Flyweight):** Calculate the default state using the `luck()` function, just as before.
+  - [x] Draw the cell based on whichever state was loaded/calculated.
+- [x] **Refactor click handler:**
+  - [x] After any game logic (pickup, craft, or place), get the cell's `key`.
+  - [x] **Save the new state:** Explicitly save the cell's new `token` value (which might be a new token, or `null`) into the `persistentCellData` map.
+
+### D3.d coming soon

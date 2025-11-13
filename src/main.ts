@@ -65,6 +65,8 @@ let inventoryToken: Token | null = null;
 const cellMap: Map<string, CellData> = new Map();
 const playerLatLng = CLASSROOM_LATLNG.clone();
 
+const persistentCellData: Map<string, Token | null> = new Map();
+
 // Map Initialization
 const map = leaflet.map(mapDiv, {
   center: playerLatLng,
@@ -144,17 +146,23 @@ function drawVisibleCells() {
       const key = `${i},${j}`;
       const bounds = cellToBounds(id);
 
+      let currentToken: Token | null;
+      if (persistentCellData.has(key)) {
+        currentToken = persistentCellData.get(key)!;
+      } else {
+        const hasToken = luck([i, j].toString()) < TOKEN_SPAWN_PROBABILITY;
+        currentToken = hasToken ? { value: 1 } : null;
+      }
+
       const rectangle = leaflet.rectangle(bounds, {
         color: "grey",
         fillOpacity: 0.1,
         weight: 0.5,
       });
 
-      const hasToken = luck([i, j].toString()) < TOKEN_SPAWN_PROBABILITY;
-
       const cellData: CellData = {
         id: id,
-        token: hasToken ? { value: 1 } : null,
+        token: currentToken,
         rectangle: rectangle,
       };
 
@@ -200,7 +208,8 @@ function drawVisibleCells() {
           }
         }
 
-        // Updates both the cell and inventory after any action
+        persistentCellData.set(key, cellData.token);
+
         updateCellVisuals(cellData);
         updateInventoryUI();
       });
