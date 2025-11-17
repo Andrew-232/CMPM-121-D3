@@ -128,20 +128,20 @@ Key gameplay challenge: Can the player continue their exact game state after clo
 
 ### Steps for D3.d
 
-- [ ] Create a `saveGameState()` function that serializes `playerLatLng`, `inventoryToken`, and `persistentCellData` (e.g., as JSON) and saves it to `localStorage`.
-- [ ] Create a `loadGameState()` function that reads from `localStorage`, parses the data, and re-hydrates the game state variables.
-- [ ] Call `loadGameState()` once on page load before initializing the map.
-- [ ] Call `saveGameState()` after any action that changes the game state (e.g., moving the player, picking up, crafting, or placing a token).
-- [ ] Add a "New Game" button to the UI that clears the game state from `localStorage` and reloads the page.
-- [ ] Create a `setPlayerPosition(newLatLng)` function to act as a **Facade**. This function will be the only way player position is "officially" updated. It should:
+- [x] Create a `saveGameState()` function that serializes `playerLatLng`, `inventoryToken`, and `persistentCellData` (e.g., as JSON) and saves it to `localStorage`.
+- [x] Create a `loadGameState()` function that reads from `localStorage`, parses the data, and re-hydrates the game state variables.
+- [x] Call `loadGameState()` once on page load before initializing the map.
+- [x] Call `saveGameState()` after any action that changes the game state (e.g., moving the player, picking up, crafting, or placing a token).
+- [x] Add a "New Game" button to the UI that clears the game state from `localStorage` and reloads the page.
+- [x] Create a `setPlayerPosition(newLatLng)` function to act as a **Facade**. This function will be the only way player position is "officially" updated. It should:
   - Update the `playerLatLng` variable.
   - Update the `playerMarker` position.
   - Pan the map (`map.panTo`).
   - Call `saveGameState()`.
-- [ ] Refactor the N/S/E/W button click handlers to use a helper (e.g., `movePlayerBy(latDelta, lngDelta)`) that calculates the new position and calls the `setPlayerPosition` facade.
-- [ ] Create a `setMovementMode(mode)` function that switches between `"buttons"` and `"geolocation"`.
-- [ ] If mode is `"buttons"`, show the `controlPanelDiv` and stop any geolocation tracking.
-- [ ] If mode is `"geolocation"`, hide the `controlPanelDiv` and start `navigator.geolocation.watchPosition()`.
-- [ ] The `watchPosition` success callback should get the new coordinates and pass them to the `setPlayerPosition` facade.
-- [ ] Add a "Toggle Movement" button to the UI.
-- [ ] Read the URL query parameter (e.g., `?movement=geolocation`) on page load to set the initial movement mode.
+- [x] Refactor the N/S/E/W button click handlers to use a helper (e.g., `movePlayerBy(latDelta, lngDelta)`) that calculates the new position and calls the `setPlayerPosition` facade.
+- [x] Create a `setMovementMode(mode)` function that switches between `"buttons"` and `"geolocation"`.
+- [x] If mode is `"buttons"`, show the `controlPanelDiv` and stop any geolocation tracking.
+- [x] If mode is `"geolocation"`, hide the `controlPanelDiv` and start `navigator.geolocation.watchPosition()`.
+- [x] The `watchPosition` success callback should get the new coordinates and pass them to the `setPlayerPosition` facade.
+- [x] Add a "Toggle Movement" button to the UI.
+- [x] Read the URL query parameter (e.g., `?movement=geolocation`) on page load to set the initial movement mode.
